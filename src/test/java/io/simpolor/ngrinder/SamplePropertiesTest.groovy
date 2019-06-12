@@ -4,16 +4,22 @@ import HTTPClient.Cookie
 import HTTPClient.CookieModule
 import HTTPClient.HTTPResponse
 import HTTPClient.NVPair
+import ch.qos.logback.classic.Level
+import net.grinder.engine.process.JUnitThreadContextInitializer
 import net.grinder.plugin.http.HTTPPluginControl
 import net.grinder.plugin.http.HTTPRequest
 import net.grinder.script.GTest
 import net.grinder.scriptengine.groovy.junit.GrinderRunner
 import net.grinder.scriptengine.groovy.junit.annotation.BeforeProcess
 import net.grinder.scriptengine.groovy.junit.annotation.BeforeThread
+import net.grinder.util.GrinderUtils
 import org.codehaus.groovy.reflection.ReflectionUtils
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.slf4j.LoggerFactory
+
+import java.util.concurrent.ThreadLocalRandom
 
 import static net.grinder.script.Grinder.grinder
 import static org.hamcrest.Matchers.is
@@ -36,7 +42,8 @@ class SamplePropertiesTest {
     public static NVPair[] params = []
     public static Cookie[] cookies = []
 
-    static def sample
+    static def samples
+    def currentSample
 
     static {
         def props = new Properties()
@@ -48,9 +55,8 @@ class SamplePropertiesTest {
         def config = new ConfigSlurper().parse props;
         student.close();
 
-        sample = config.sample.data.trim()?.tokenize(',') ?: ['1|MinsuKim|18|Soccer','2|James|19|Run'];
+        samples = config.sample.data.trim()?.tokenize(',') ?: ['1|MinsuKim|18|Soccer','2|James|19|Run'];
 
-        System.out.println("sample : "+sample)
     }
 
     @BeforeProcess
@@ -63,9 +69,19 @@ class SamplePropertiesTest {
 
     @BeforeThread
     void beforeThread() {
+
+        // 로그레벨 설정
+        // LoggerFactory.getLogger("worker").setLevel(Level.DEBUG)
+        // LoggerFactory.getLogger(JUnitThreadContextInitializer.class).setLevel(Level.DEBUG)
+
         test.record(this, "test")
-        grinder.statistics.delayReports=true;
+        grinder.statistics.delayReports=true
         grinder.logger.info("before thread.")
+
+        // Thread 증가
+        def uid = threadUID(samples) // sample 데이터
+        currentSample = samples[uid].toString().split(/\|/)
+
     }
 
     @Before
@@ -85,5 +101,20 @@ class SamplePropertiesTest {
             assertThat(result.statusCode, is(200));
         }
     }
+
+    // 쓰레드별 유니크아이디
+    def threadUID = { source ->
+        try {
+            return GrinderUtils.threadUniqId
+        } catch (NullPointerException e) { // 로컬 테스트시 발생
+            def no = randomInt source.size()
+            grinder.logger.info("\n### Unique Thread Number] no: ${no} / error: ${e.toString()}\n")
+            return no
+        }
+    }
+
+    // thread 별 랜덤 숫자 리턴; least는 포함, bound는 미포함
+    def randomInt = { bound, least=0 -> ThreadLocalRandom.current().nextInt(least as int, bound as int) }
+
 
 }

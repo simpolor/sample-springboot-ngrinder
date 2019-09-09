@@ -56,3 +56,6 @@
 ```
 
 4. ngrinder를 위한 groovy 파일을 생성하여 테스트 진행
+
+5. 실행시 VM 옵션에 아래 값을 추가 ( 실행하면 해당 값이 나옴 )
+   -javaagent:/Users/parksy/.m2/repository/net/sf/grinder/grinder-dcr-agent/3.9.1/grinder-dcr-agent-3.9.1.jar

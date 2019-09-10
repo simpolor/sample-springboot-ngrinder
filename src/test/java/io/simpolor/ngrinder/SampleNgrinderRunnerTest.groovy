@@ -59,6 +59,11 @@ class SampleNgrinderRunnerTest {
 
     @Test
     void test(){
+
+        params = [
+                new NVPair("q", "1")
+        ]
+
         HTTPResponse result = request.GET("https://www.naver.com/", params)
 
         if (result.statusCode == 301 || result.statusCode == 302) {

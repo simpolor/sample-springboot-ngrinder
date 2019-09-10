@@ -30,7 +30,7 @@ import static org.junit.Assert.assertThat
  * @author admin
  */
 @RunWith(GrinderRunner)
-class SampleLogTest {
+class SampleGetNumberTest {
 
     public static GTest test
     public static HTTPRequest request
@@ -38,9 +38,10 @@ class SampleLogTest {
     public static NVPair[] params = []
     public static Cookie[] cookies = []
 
-    // 로그 설정
-    // public static logLevel = Level.WARN;
-    public static logLevel = Level.INFO;
+    // Ngrinder Number 가져오기
+    def agentNumber;
+    def processNumber;
+    def threadNumber;
 
     @BeforeProcess
     static void beforeProcess() {
@@ -56,9 +57,10 @@ class SampleLogTest {
         grinder.statistics.delayReports=true;
         grinder.logger.info("before thread.")
 
-        // 로그 설정
-        LoggerFactory.getLogger("worker").setLevel(logLevel)
-        LoggerFactory.getLogger(JUnitThreadContextInitializer.class).setLevel(logLevel)
+        // Ngrinder Number 가져오기
+        agentNumber = grinder.agentNumber
+        processNumber = grinder.processNumber;
+        threadNumber = grinder.threadNumber;
     }
 
     @Before
@@ -70,6 +72,11 @@ class SampleLogTest {
 
     @Test
     void test(){
+
+        println "grinder.agentNumber : " + agentNumber;
+        println "grinder.processNumber : " + processNumber;
+        println "grinder.threadNumber : " + threadNumber;
+
         HTTPResponse result = request.GET("https://www.naver.com/", params)
 
         if (result.statusCode == 301 || result.statusCode == 302) {

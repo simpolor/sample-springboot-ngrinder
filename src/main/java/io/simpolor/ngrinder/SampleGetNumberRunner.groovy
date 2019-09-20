@@ -27,13 +27,18 @@ import static org.junit.Assert.assertThat
  * @author admin
  */
 @RunWith(GrinderRunner)
-class SampleNgrinderRunnerTest {
+class SampleGetNumberRunner {
 
     public static GTest test
     public static HTTPRequest request
     public static NVPair[] headers = []
     public static NVPair[] params = []
     public static Cookie[] cookies = []
+
+    // Ngrinder Number 가져오기
+    def agentNumber;
+    def processNumber;
+    def threadNumber;
 
     @BeforeProcess
     static void beforeProcess() {
@@ -48,6 +53,11 @@ class SampleNgrinderRunnerTest {
         test.record(this, "test")
         grinder.statistics.delayReports=true;
         grinder.logger.info("before thread.")
+
+        // Ngrinder Number 가져오기
+        agentNumber = grinder.agentNumber
+        processNumber = grinder.processNumber;
+        threadNumber = grinder.threadNumber;
     }
 
     @Before
@@ -60,9 +70,9 @@ class SampleNgrinderRunnerTest {
     @Test
     void test(){
 
-        params = [
-                new NVPair("q", "1")
-        ]
+        println "grinder.agentNumber : " + agentNumber;
+        println "grinder.processNumber : " + processNumber;
+        println "grinder.threadNumber : " + threadNumber;
 
         HTTPResponse result = request.GET("https://www.naver.com/", params)
 

@@ -4,8 +4,6 @@ import HTTPClient.Cookie
 import HTTPClient.CookieModule
 import HTTPClient.HTTPResponse
 import HTTPClient.NVPair
-import ch.qos.logback.classic.Level
-import net.grinder.engine.process.JUnitThreadContextInitializer
 import net.grinder.plugin.http.HTTPPluginControl
 import net.grinder.plugin.http.HTTPRequest
 import net.grinder.script.GTest
@@ -17,7 +15,6 @@ import org.codehaus.groovy.reflection.ReflectionUtils
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.slf4j.LoggerFactory
 
 import java.util.concurrent.ThreadLocalRandom
 
@@ -34,7 +31,7 @@ import static org.junit.Assert.assertThat
  * @author admin
  */
 @RunWith(GrinderRunner)
-class SamplePropertiesTest {
+class SampleProperties {
 
     public static GTest test
     public static HTTPRequest request
@@ -93,6 +90,9 @@ class SamplePropertiesTest {
 
     @Test
     void test(){
+
+        println "currentSample : "+currentSample
+
         HTTPResponse result = request.GET("https://www.naver.com/", params)
 
         if (result.statusCode == 301 || result.statusCode == 302) {

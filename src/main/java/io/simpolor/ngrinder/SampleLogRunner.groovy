@@ -30,7 +30,7 @@ import static org.junit.Assert.assertThat
  * @author admin
  */
 @RunWith(GrinderRunner)
-class SampleLogTest {
+class SampleLogRunner {
 
     public static GTest test
     public static HTTPRequest request

@@ -4,8 +4,6 @@ import HTTPClient.Cookie
 import HTTPClient.CookieModule
 import HTTPClient.HTTPResponse
 import HTTPClient.NVPair
-import ch.qos.logback.classic.Level
-import net.grinder.engine.process.JUnitThreadContextInitializer
 import net.grinder.plugin.http.HTTPPluginControl
 import net.grinder.plugin.http.HTTPRequest
 import net.grinder.script.GTest
@@ -15,7 +13,6 @@ import net.grinder.scriptengine.groovy.junit.annotation.BeforeThread
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.slf4j.LoggerFactory
 
 import static net.grinder.script.Grinder.grinder
 import static org.hamcrest.Matchers.is
@@ -30,18 +27,13 @@ import static org.junit.Assert.assertThat
  * @author admin
  */
 @RunWith(GrinderRunner)
-class SampleGetNumberTest {
+class SampleNgrinderRunner {
 
     public static GTest test
     public static HTTPRequest request
     public static NVPair[] headers = []
     public static NVPair[] params = []
     public static Cookie[] cookies = []
-
-    // Ngrinder Number 가져오기
-    def agentNumber;
-    def processNumber;
-    def threadNumber;
 
     @BeforeProcess
     static void beforeProcess() {
@@ -56,11 +48,6 @@ class SampleGetNumberTest {
         test.record(this, "test")
         grinder.statistics.delayReports=true;
         grinder.logger.info("before thread.")
-
-        // Ngrinder Number 가져오기
-        agentNumber = grinder.agentNumber
-        processNumber = grinder.processNumber;
-        threadNumber = grinder.threadNumber;
     }
 
     @Before
@@ -73,9 +60,9 @@ class SampleGetNumberTest {
     @Test
     void test(){
 
-        println "grinder.agentNumber : " + agentNumber;
-        println "grinder.processNumber : " + processNumber;
-        println "grinder.threadNumber : " + threadNumber;
+        params = [
+                new NVPair("q", "1")
+        ]
 
         HTTPResponse result = request.GET("https://www.naver.com/", params)
 
